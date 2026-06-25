@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, GeoJSON, CircleMarker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, CircleMarker, Popup, useMapEvents } from 'react-leaflet';
 import { X, ArrowRight, Layers } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import {
@@ -105,22 +105,40 @@ function WardPanel({ ward, onClose, onSimulate }) {
   );
 }
 
+function ZoomTracker({ setZoomLevel }) {
+  useMapEvents({
+    zoomend: (e) => {
+      setZoomLevel(e.target.getZoom());
+    },
+  });
+  return null;
+}
+
 export default function HeatMapPage() {
   const navigate = useNavigate();
   const [activeLayer, setActiveLayer] = useState('hsi');
   const [showHotspots, setShowHotspots] = useState(true);
   const [selectedWard, setSelectedWard] = useState(null);
   const [geoKey, setGeoKey] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(12);
 
-  const wardStyle = (feature) => ({
-    fillColor: getLayerColor(feature, activeLayer),
-    fillOpacity: selectedWard?.id === feature.properties.id ? 0.88 : 0.68,
-    weight: selectedWard?.id === feature.properties.id ? 2 : 0.8,
-    color: selectedWard?.id === feature.properties.id
-      ? 'rgba(255,255,255,0.9)'
-      : 'rgba(255,255,255,0.2)',
-    opacity: 1,
-  });
+  const wardStyle = (feature) => {
+    // Hide layer completely if zoomed out to show satellite view
+    if (zoomLevel < 13) {
+      return { fillOpacity: 0, opacity: 0, weight: 0 };
+    }
+    
+    // Show vibrant heat blocks when zoomed in
+    return {
+      fillColor: getLayerColor(feature, activeLayer),
+      fillOpacity: selectedWard?.id === feature.properties.id ? 0.85 : 0.65,
+      weight: selectedWard?.id === feature.properties.id ? 2 : 0.5,
+      color: selectedWard?.id === feature.properties.id
+        ? 'rgba(255,255,255,1)'
+        : 'rgba(255,255,255,0.1)',
+      opacity: 1,
+    };
+  };
 
   const onEachWard = (feature, layer) => {
     layer.on('click', () => setSelectedWard(feature.properties));
@@ -165,11 +183,13 @@ export default function HeatMapPage() {
         className="leaflet-map"
         zoomControl={false}
       >
+        <ZoomTracker setZoomLevel={setZoomLevel} />
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           maxZoom={18}
+          attribution="&copy; Esri"
         />
-        <GeoJSON key={geoKey} data={WARDS_GEOJSON} style={wardStyle} onEachFeature={onEachWard} />
+        <GeoJSON key={`${geoKey}-${zoomLevel}`} data={WARDS_GEOJSON} style={wardStyle} onEachFeature={onEachWard} />
         {showHotspots && HOTSPOTS.map(hs => (
           <CircleMarker
             key={hs.id}
@@ -224,11 +244,12 @@ export default function HeatMapPage() {
           <div className="legend-title label">Heat Severity Index</div>
           <div className="legend-scale">
             {[
-              { color: '#4361EE', label: '< 0.5 — Cool' },
-              { color: '#4CC9F0', label: '0.5 – 1.0' },
-              { color: '#C9961A', label: '1.0 – 1.5 — Moderate' },
-              { color: '#D4622A', label: '1.5 – 2.5 — High' },
-              { color: '#C0392B', label: '> 2.5 — Critical' },
+              { color: '#0000AA', label: '< 0.5 — Cool' },
+              { color: '#00AFFF', label: '0.5 – 1.0' },
+              { color: '#00FF00', label: '1.0 – 1.5 — Mod' },
+              { color: '#FFFF00', label: '1.5 – 2.0 — High' },
+              { color: '#FF5500', label: '2.0 – 2.5' },
+              { color: '#FF0000', label: '> 2.5 — Critical' },
             ].map(l => (
               <div key={l.label} className="legend-item">
                 <div className="legend-dot" style={{ background: l.color }} />

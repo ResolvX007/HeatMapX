@@ -215,12 +215,14 @@ export const SEVERITY_COLORS = {
 };
 
 export function getHSIColor(hsi) {
-  if (hsi < 0.5)  return '#4361EE';
-  if (hsi < 1.0)  return '#4CC9F0';
-  if (hsi < 1.5)  return '#F8FF44';
-  if (hsi < 2.0)  return '#FF6B35';
-  if (hsi < 2.5)  return '#EF233C';
-  return '#590D22';
+  // Vibrant Folium/Jet style colormap
+  if (hsi < 0.5) return '#0000AA'; // Deep Blue
+  if (hsi < 1.0) return '#00AFFF'; // Cyan
+  if (hsi < 1.5) return '#00FF00'; // Green
+  if (hsi < 2.0) return '#FFFF00'; // Yellow
+  if (hsi < 2.5) return '#FF5500'; // Orange
+  if (hsi < 3.0) return '#FF0000'; // Red
+  return '#AA0000'; // Dark Red
 }
 
 export function getSeverityLabel(hsi) {

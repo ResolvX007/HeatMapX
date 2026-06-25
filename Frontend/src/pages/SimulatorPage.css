@@ -1,0 +1,200 @@
+.simulator-page { display: flex; flex-direction: column; height: 100vh; }
+
+.simulator-body {
+  display: grid;
+  grid-template-columns: 240px 1fr 280px;
+  flex: 1;
+  overflow: hidden;
+  border-top: 0;
+}
+
+.sim-col {
+  padding: var(--sp-8) var(--sp-6);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+.sim-col-ward    { border-right: 1px solid var(--border); background: var(--bg-subtle); }
+.sim-col-controls { border-right: 1px solid var(--border); }
+.sim-col-results  { background: var(--bg-subtle); }
+
+.sim-col-label { /* extends .label class */ margin-bottom: var(--sp-2); }
+
+/* Ward select */
+.sim-ward-select {
+  font-size: 0.875rem;
+  padding: 8px 10px;
+}
+
+.sim-ward-facts {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.sim-fact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+.sim-fact-row:last-child { border-bottom: none; }
+.sim-fact-label { color: var(--text-3); }
+.sim-fact-val { color: var(--text); font-weight: 500; }
+
+.sim-physics-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4) var(--sp-5);
+  color: var(--text-2);
+}
+
+/* Interventions */
+.sim-intervention {
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--sp-5);
+  transition: border-color var(--ease-base), background var(--ease-base);
+}
+.sim-intervention.active {
+  border-color: var(--border-strong);
+  background: var(--bg-subtle);
+}
+.sim-int-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+.sim-int-title { font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px; }
+.sim-int-sub { font-size: 0.78rem; color: var(--text-3); letter-spacing: -0.01em; }
+.sim-int-controls {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.sim-formula {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-3);
+  background: var(--bg-muted);
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+}
+
+/* Toggle */
+.sim-toggle {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  transition: background var(--ease-base);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.sim-toggle.on  { background: var(--text); justify-content: flex-end; }
+.sim-toggle.off { background: var(--bg-muted); justify-content: flex-start; }
+.sim-toggle-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  transition: margin var(--ease-base);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Slider */
+.sim-slider { display: flex; flex-direction: column; gap: var(--sp-2); }
+.sim-slider-header { display: flex; justify-content: space-between; align-items: baseline; }
+.sim-slider-label { font-size: 0.8125rem; color: var(--text-2); letter-spacing: -0.01em; }
+.sim-slider-val { font-size: 0.875rem; color: var(--text); }
+.sim-slider-range { display: flex; justify-content: space-between; font-size: 0.6875rem; color: var(--text-3); }
+
+/* Delta gauge */
+.delta-gauge {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--sp-6);
+}
+.delta-temps { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-5); }
+.delta-temp-col { text-align: center; }
+.delta-temp-label { margin-bottom: var(--sp-2); }
+.delta-temp-val { font-size: 2.25rem; font-weight: 700; letter-spacing: -0.05em; color: var(--text); line-height: 1; }
+.delta-unit { font-size: 0.9rem; font-weight: 400; color: var(--text-3); }
+.delta-arrow { font-size: 1.25rem; color: var(--text-4); }
+
+.delta-reduction { text-align: center; margin-bottom: var(--sp-5); }
+.delta-reduction-val { font-size: 2.75rem; font-weight: 700; letter-spacing: -0.05em; display: block; line-height: 1; }
+.delta-reduction-label { font-size: 0.75rem; color: var(--text-3); margin-top: 5px; display: block; }
+
+.delta-track { height: 4px; background: var(--bg-muted); border-radius: 2px; overflow: hidden; margin-bottom: var(--sp-2); }
+.delta-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--heat-critical), var(--heat-low));
+  border-radius: 2px;
+  transition: width 0.8s ease-out;
+}
+.delta-track-labels { display: flex; justify-content: space-between; font-size: 0.6875rem; color: var(--text-3); font-family: var(--font-mono); }
+
+/* Confidence */
+.sim-confidence {
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.sim-confidence strong { color: var(--text); }
+.sim-confidence-note { font-size: 0.75rem; color: var(--text-3); margin-left: auto; }
+
+/* Breakdown */
+.sim-breakdown {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.sim-breakdown-label { padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border); }
+.sim-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+.sim-breakdown-row:last-child { border-bottom: none; }
+.sb-type { flex: 1; color: var(--text-2); letter-spacing: -0.01em; }
+.sb-delta { font-size: 0.875rem; font-weight: 600; }
+.sb-cost { color: var(--text-3); font-size: 0.75rem; }
+
+/* Costs */
+.sim-costs {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.sim-costs-label { padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border); }
+.sim-cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+  color: var(--text-2);
+}
+.sim-cost-row:last-child { border-bottom: none; }
+.sim-cost-row .mono { color: var(--text); font-weight: 600; font-size: 0.875rem; }

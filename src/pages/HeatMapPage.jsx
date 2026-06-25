@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, GeoJSON, CircleMarker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
 import { X, ArrowRight, Layers } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import {
@@ -23,6 +24,20 @@ function getLayerColor(feature, layer) {
   if (layer === 'ndbi') return getHSIColor(p.ndbi_mean * 3);
   return getHSIColor(p.heat_severity_idx);
 }
+
+const createCustomIcon = (hs) => {
+  return L.divIcon({
+    className: 'custom-hs-marker-container',
+    html: `
+      <div class="custom-hs-label">
+        <div class="hs-label-name">${hs.hotspot_label || hs.ward_name}</div>
+        <div class="hs-label-temp">${hs.mean_lst.toFixed(1)} °C</div>
+      </div>
+    `,
+    iconSize: [80, 44],
+    iconAnchor: [40, 22]
+  });
+};
 
 function WardPanel({ ward, onClose, onSimulate }) {
   if (!ward) return null;
@@ -180,6 +195,7 @@ export default function HeatMapPage() {
       <MapContainer
         center={[CITY.center_lat, CITY.center_lng]}
         zoom={12}
+        minZoom={11}
         className="leaflet-map"
         zoomControl={false}
       >
@@ -191,24 +207,11 @@ export default function HeatMapPage() {
         />
         <GeoJSON key={`${geoKey}-${zoomLevel}`} data={WARDS_GEOJSON} style={wardStyle} onEachFeature={onEachWard} />
         {showHotspots && HOTSPOTS.map(hs => (
-          <CircleMarker
+          <Marker
             key={hs.id}
-            center={[hs.lat, hs.lng]}
-            radius={hs.severity_rank === 'critical' ? 10 : 7}
-            pathOptions={{
-              fillColor: hs.severity_rank === 'critical' ? '#C0392B'
-                : hs.severity_rank === 'high' ? '#D4622A' : '#C9961A',
-              fillOpacity: 0.25,
-              color: hs.severity_rank === 'critical' ? '#C0392B'
-                : hs.severity_rank === 'high' ? '#D4622A' : '#C9961A',
-              weight: 1.5,
-            }}
-          >
-            <Popup>
-              <strong>{hs.hotspot_label}</strong><br />
-              {hs.ward_name} · {hs.mean_lst}°C
-            </Popup>
-          </CircleMarker>
+            position={[hs.lat, hs.lng]}
+            icon={createCustomIcon(hs)}
+          />
         ))}
       </MapContainer>
 

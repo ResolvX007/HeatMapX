@@ -185,9 +185,9 @@ export default function HeatMapPage() {
       >
         <ZoomTracker setZoomLevel={setZoomLevel} />
         <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          maxZoom={18}
-          attribution="&copy; Esri"
+          url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+          maxZoom={20}
+          attribution="&copy; Google Maps"
         />
         <GeoJSON key={`${geoKey}-${zoomLevel}`} data={WARDS_GEOJSON} style={wardStyle} onEachFeature={onEachWard} />
         {showHotspots && HOTSPOTS.map(hs => (

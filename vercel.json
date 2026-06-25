@@ -1,5 +1,4 @@
 {
-  "name": "resolvx-app-deploy",
   "cleanUrls": true,
   "routes": [
     { "handle": "filesystem" },
